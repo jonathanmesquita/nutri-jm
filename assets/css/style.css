@@ -103,7 +103,7 @@ a {
   z-index: 5;
 
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 
   height: calc(var(--altura-abas) + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
@@ -119,9 +119,11 @@ a {
   min-height: 44px;
 
   color: var(--cinza);
-  font-size: 0.8rem;
+  font-size: clamp(0.66rem, 2.9vw, 0.8rem);
   font-weight: 600;
   text-decoration: none;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 
 .abas a[aria-current="page"] {
@@ -225,6 +227,11 @@ h2 {
   color: var(--cinza);
 }
 
+/* aviso de status vazio não ocupa espaço (o texto entra depois de uma ação) */
+.nota[role="status"]:empty {
+  display: none;
+}
+
 .nota,
 .ajuda {
   margin: 0.6rem 0 0;
@@ -315,6 +322,9 @@ legend {
 
 input[type="number"],
 input[type="text"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
 select {
   width: 100%;
   max-width: 100%;
@@ -768,6 +778,155 @@ textarea {
   display: flex;
   gap: 0.35rem;
   justify-content: flex-end;
+}
+
+/* ---------- medicação ---------- */
+
+.subnav {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+}
+
+.subnav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.9rem;
+
+  border: 1px solid var(--areia);
+  border-radius: 999px;
+
+  background: var(--cartao);
+  color: var(--tinta);
+
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.subnav a[aria-current="page"] {
+  border-color: var(--tinta);
+  background: var(--tinta);
+  color: var(--fundo);
+}
+
+.contagem {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.contagem.atrasada {
+  color: var(--terracota-texto);
+}
+
+.alertas {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.alertas li {
+  padding: 0.5rem 0.75rem;
+  border-left: 4px solid var(--areia);
+  background: var(--fundo);
+  font-size: 0.9rem;
+}
+
+.alertas .alerta-aviso {
+  border-left-color: var(--terracota);
+}
+
+.alertas .alerta-erro {
+  border-left-color: var(--perigo);
+  font-weight: 600;
+}
+
+.alertas .alerta-aviso::before {
+  content: "⚠ ";
+}
+
+.alertas .alerta-erro::before {
+  content: "✕ ";
+}
+
+.mapa-grade {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.local {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.1rem 0.5rem;
+  align-items: center;
+
+  min-height: 48px;
+  padding: 0.5rem 0.6rem;
+
+  border: 1px solid var(--areia);
+  border-radius: 8px;
+
+  background: var(--fundo);
+  cursor: pointer;
+}
+
+.local:has(input:checked) {
+  border: 2px solid var(--tinta);
+}
+
+.local input {
+  grid-row: span 2;
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: var(--terracota);
+}
+
+.local-nome {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.local-uso {
+  font-size: 0.78rem;
+  color: var(--cinza);
+}
+
+.selo {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--oliva);
+}
+
+.caneta {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--areia);
+}
+
+.caneta p {
+  margin: 0.15rem 0;
+}
+
+.faq > summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.faq + .faq {
+  border-top: 1px solid var(--areia);
+}
+
+.faq p {
+  margin: 0 0 0.75rem;
+  color: var(--cinza);
 }
 
 /* ---------- glossário ---------- */

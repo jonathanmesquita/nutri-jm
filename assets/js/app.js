@@ -13,6 +13,7 @@ import { criarTelaDieta, lerDieta, metasDoPerfil } from "./tela-dieta.js";
 import { criarCatalogo } from "./catalogo.js";
 import { criarTelaCorpo, lerMedicoes, dataBr } from "./tela-corpo.js";
 import { ultimaMedicao } from "./body.js";
+import { criarTelaMedicacao } from "./tela-medicacao.js";
 import { totaisDia, resumoDiario, ROTULO_ESTADO } from "./diet.js";
 import {
   APP,
@@ -563,12 +564,14 @@ const ROTAS = {
   dieta: criarTelaDieta({ h, numero, storage, avisoSaude, lerPerfil, resumo }),
   alimentos: criarTelaAlimentos({ h, numero, storage, avisoSaude }),
   corpo: criarTelaCorpo({ h, storage, avisoSaude, lerPerfil, salvarPerfil }),
-  compras: () => telaEmBreve("compras")
+  compras: () => telaEmBreve("compras"),
+  medicacao: criarTelaMedicacao({ h, storage })
 };
 
+/* "#medicacao/estoque" → ["medicacao", "estoque"]: a subseção vai para a tela. */
 function rotaAtual() {
-  const r = location.hash.replace("#", "");
-  return r in ROTAS ? r : "hoje";
+  const [r, sub] = location.hash.replace("#", "").split("/");
+  return r in ROTAS ? [r, sub] : ["hoje", undefined];
 }
 
 function irPara(rota) {
@@ -577,8 +580,8 @@ function irPara(rota) {
 }
 
 function render() {
-  const rota = rotaAtual();
-  conteudo.replaceChildren(ROTAS[rota]());
+  const [rota, sub] = rotaAtual();
+  conteudo.replaceChildren(ROTAS[rota](sub));
   navegacao.forEach((link) => {
     if (link.dataset.rota === rota) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
