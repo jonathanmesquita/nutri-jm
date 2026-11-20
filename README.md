@@ -8,12 +8,11 @@ Os dados ficam só no aparelho de quem usa (`localStorage`). Endereço: **nutri.
 
 ## Estado
 
-**Fases 1 a 5 entregues:** estrutura, navegação, armazenamento, configurações, primeira
+**Fases 1 a 6 entregues:** estrutura, navegação, armazenamento, configurações, primeira
 execução, TMB, GCD/TDEE, objetivo, metas de macronutrientes, IMC, banco de alimentos, pesquisa,
 calculadora nutricional, refeições, subtotais e resumo diário (e o consumido × meta no painel
 Hoje), bioimpedância, histórico corporal e avatar. Mais o menu **Medicação** (controle de
-canetas GLP-1 / GIP), fora das fases da especificação original. Compras aparece na navegação e
-diz que chega na fase 6.
+canetas GLP-1 / GIP), fora das fases da especificação original, e a **lista de compras**.
 
 ## Rodar
 
@@ -51,6 +50,8 @@ assets/js/body.js        medições, histórico, IMC e avatar, sem DOM — testa
 assets/js/tela-corpo.js  tela da aba Corpo
 assets/js/meds.js        medicação: estoque, aplicações, rodízio, alertas e sintomas, sem DOM — testadas
 assets/js/tela-medicacao.js  tela da aba Medicação (#medicacao, /estoque, /diario, /ajuda)
+assets/js/shopping.js    lista de compras: manual, gerada da dieta, status, sem DOM — testada
+assets/js/tela-compras.js  tela da aba Compras
 assets/icons/            ícones do app (32, 192, 512, apple-touch) e a arte original
 favicon.ico              16, 32 e 48 px
 tests/                   node --test
@@ -143,6 +144,20 @@ transforma os dois JSON do pacote em `data/foods.js`; o cabeçalho do arquivo di
   rotula ninguém. Pode ser escondido, e a escolha fica salva.
 - O "registro inicial" da especificação traz medidas de uma pessoa real e não entrou. O perfil de
   demonstração tem "Preencher com medições de exemplo", com três medições fictícias.
+
+## Compras
+
+- **Gerar da dieta** para 1 a 31 dias: soma o peso de cada alimento em todas as refeições
+  (unidade caseira vira gramas) e multiplica pelos dias. O peso é o do alimento como está na
+  dieta (arroz cozido, não cru), e a tela diz isso.
+- **Itens manuais** para o que não está na dieta (creatina, canela…), sem repetir nome.
+- Agrupada como na especificação (proteínas, carboidratos, frutas, verduras/legumes,
+  laticínios, despensa, suplementos, outros), com status **comprar, já tenho, comprado,
+  ignorar**. Comprado aparece riscado e com ✓, não só em outra cor.
+- Gerar de novo troca só os itens da dieta e **mantém o status** de quem já estava; os manuais
+  ficam. "Tirar comprados e ignorados" recomeça a lista para a próxima compra.
+- "Copiar o que falta comprar" põe a lista em texto na área de transferência (com caixa de
+  texto de reserva se o navegador não deixar).
 
 ## Medicação (GLP-1 / GIP)
 
