@@ -8,10 +8,11 @@ Os dados ficam só no aparelho de quem usa (`localStorage`). Endereço: **nutri.
 
 ## Estado
 
-**Fases 1 a 4 entregues:** estrutura, navegação, armazenamento, configurações, primeira
+**Fases 1 a 5 entregues:** estrutura, navegação, armazenamento, configurações, primeira
 execução, TMB, GCD/TDEE, objetivo, metas de macronutrientes, IMC, banco de alimentos, pesquisa,
-calculadora nutricional, **refeições, subtotais e resumo diário** (e o consumido × meta no
-painel Hoje). Corpo e Compras aparecem na navegação e dizem em que fase chegam (5 e 6).
+calculadora nutricional, refeições, subtotais e resumo diário (e o consumido × meta no painel
+Hoje), **bioimpedância, histórico corporal e avatar**. Compras aparece na navegação e diz que
+chega na fase 6.
 
 ## Rodar
 
@@ -45,6 +46,8 @@ scripts/gerar-alimentos.mjs  gera data/foods.js
 assets/js/catalogo.js    TACO + alimentos cadastrados: fonte única para todas as telas
 assets/js/diet.js        refeições, subtotais e resumo do dia, sem DOM — testadas
 assets/js/tela-dieta.js  tela da aba Dieta
+assets/js/body.js        medições, histórico, IMC e avatar, sem DOM — testadas
+assets/js/tela-corpo.js  tela da aba Corpo
 assets/icons/            ícones do app (32, 192, 512, apple-touch) e a arte original
 favicon.ico              16, 32 e 48 px
 tests/                   node --test
@@ -119,6 +122,24 @@ transforma os dois JSON do pacote em `data/foods.js`; o cabeçalho do arquivo di
 - "Preencher com um dia de exemplo" monta um dia fictício só com alimentos da TACO. Não é
   recomendação nem o plano de ninguém. O plano alimentar da especificação traz o nome de uma
   pessoa real e por isso não entrou no app.
+
+## Corpo
+
+- **Medição:** data e peso obrigatórios; altura, gordura corporal (%), músculo esquelético (%),
+  gordura visceral, TMB medida e idade corporal opcionais. O que não foi medido aparece como
+  "—". São registros de medição, não diagnóstico, e a tela diz isso.
+- **IMC** sai do peso e da altura da medição (ou do perfil, avisando), com a classificação e o
+  aviso de que não diferencia músculo de gordura. Gordura e músculo aparecem separados.
+- **Histórico** em tabela, da mais recente para a mais antiga, com editar e remover; a última
+  medição mostra a variação para a anterior.
+- **Atualizar o perfil:** ao salvar, uma caixa (marcada por padrão na medição mais recente) leva
+  peso, altura e TMB medida para o perfil, e o painel Hoje passa a usar esses valores. A fonte da
+  TMB em uso (medida ou calculada) continua sendo escolhida em Configurações.
+- **Avatar** em pixel art, desenhado pelo próprio código (SVG, sem imagem de terceiro), em 8
+  estágios por faixa de IMC (`ESTAGIOS_AVATAR`). Só número e faixa, sem nome: é lúdico e não
+  rotula ninguém. Pode ser escondido, e a escolha fica salva.
+- O "registro inicial" da especificação traz medidas de uma pessoa real e não entrou. O perfil de
+  demonstração tem "Preencher com medições de exemplo", com três medições fictícias.
 
 ## Segurança
 

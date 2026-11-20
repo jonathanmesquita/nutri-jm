@@ -11,6 +11,8 @@ import { resumo, validarPerfil, porKg } from "./calculations.js";
 import { criarTelaAlimentos } from "./tela-alimentos.js";
 import { criarTelaDieta, lerDieta, metasDoPerfil } from "./tela-dieta.js";
 import { criarCatalogo } from "./catalogo.js";
+import { criarTelaCorpo, lerMedicoes, dataBr } from "./tela-corpo.js";
+import { ultimaMedicao } from "./body.js";
 import { totaisDia, resumoDiario, ROTULO_ESTADO } from "./diet.js";
 import {
   APP,
@@ -131,7 +133,7 @@ function telaHoje() {
       "section",
       { class: "cartao", "aria-labelledby": "t-perfil" },
       h("h2", { id: "t-perfil" }, "Perfil"),
-      h("dl", { class: "lista" }, linha("Peso atual", `${numero(perfil.peso, 1)} kg`), linha("Objetivo", objetivo))
+      h("dl", { class: "lista" }, linha("Peso atual", `${numero(perfil.peso, 1)} kg`, (() => { const m = ultimaMedicao(lerMedicoes(storage)); return m ? `última medição: ${dataBr(m.data)}` : null; })()), linha("Objetivo", objetivo))
     ),
 
     h(
@@ -512,7 +514,12 @@ const GLOSSARIO = [
   ["IMC", "Relação entre peso e altura. Não diferencia massa muscular de gordura."],
   ["TACO", "Tabela Brasileira de Composição de Alimentos (NEPA/UNICAMP, 4ª ed., 2011). É a fonte dos valores nutricionais do app, por 100 g de parte comestível."],
   ["Traço", "Quantidade presente, mas abaixo do limite que a análise consegue medir. Entra na conta como zero."],
-  ["— (sem dado)", "A fonte não publica esse valor. O app não estima: deixa em branco."]
+  ["— (sem dado)", "A fonte não publica esse valor. O app não estima: deixa em branco."],
+  ["Bioimpedância", "Exame que estima a composição do corpo pela passagem de uma corrente elétrica fraca. Os valores são estimativas do aparelho e variam com hidratação e horário."],
+  ["Gordura corporal (%)", "Parte do peso que é gordura, segundo a estimativa do aparelho de bioimpedância."],
+  ["Músculo esquelético (%)", "Parte do peso que é músculo ligado ao esqueleto, segundo a estimativa do aparelho."],
+  ["Gordura visceral", "Índice que o aparelho dá para a gordura ao redor dos órgãos. A escala muda de um fabricante para outro."],
+  ["Idade corporal", "Número que alguns aparelhos calculam comparando as medidas com uma referência própria. Não é exame médico."]
 ];
 
 function telaGlossario() {
@@ -534,7 +541,6 @@ function telaGlossario() {
 }
 
 const EM_BREVE = {
-  corpo: ["Corpo", "Bioimpedância, histórico de medições e avatar.", 5],
   compras: ["Compras", "Lista manual e gerada a partir do plano alimentar.", 6]
 };
 
@@ -556,7 +562,7 @@ const ROTAS = {
   glossario: telaGlossario,
   dieta: criarTelaDieta({ h, numero, storage, avisoSaude, lerPerfil, resumo }),
   alimentos: criarTelaAlimentos({ h, numero, storage, avisoSaude }),
-  corpo: () => telaEmBreve("corpo"),
+  corpo: criarTelaCorpo({ h, storage, avisoSaude, lerPerfil, salvarPerfil }),
   compras: () => telaEmBreve("compras")
 };
 

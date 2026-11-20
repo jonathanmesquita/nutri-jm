@@ -63,6 +63,22 @@ export const FAIXAS_IMC = [
  */
 export const PROGRESSO = { proximo: 0.85, atingido: 0.97, acima: 1.03 };
 
+/*
+ * Avatar corporal (especificação, item 15): 8 estágios por faixa de IMC. Só o número e a
+ * faixa, sem nome: o avatar é lúdico e não rotula ninguém. `largura` é o quanto o desenho
+ * alarga (1 a 8). Os cortes seguem as faixas do IMC, com as mais largas divididas em duas.
+ */
+export const ESTAGIOS_AVATAR = [
+  { min: 0, max: 16, largura: 1 },
+  { min: 16, max: 18.5, largura: 2 },
+  { min: 18.5, max: 21.7, largura: 3 },
+  { min: 21.7, max: 25, largura: 4 },
+  { min: 25, max: 27.5, largura: 5 },
+  { min: 27.5, max: 30, largura: 6 },
+  { min: 30, max: 35, largura: 7 },
+  { min: 35, max: Infinity, largura: 8 }
+];
+
 export const REFEICOES_PADRAO = [
   "Pré-treino",
   "Café da manhã",
