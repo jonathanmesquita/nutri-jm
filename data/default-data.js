@@ -56,6 +56,13 @@ export const FAIXAS_IMC = [
   { ate: Infinity, rotulo: "Obesidade grau III" }
 ];
 
+/*
+ * Faixas do progresso consumido ÷ meta (especificação, item 2): abaixo de 85% é "abaixo",
+ * de 85% até 97% é "próximo", de 97% a 103% é "atingido", acima de 103% é "acima".
+ * Convenção do app para a tela, não recomendação nutricional.
+ */
+export const PROGRESSO = { proximo: 0.85, atingido: 0.97, acima: 1.03 };
+
 export const REFEICOES_PADRAO = [
   "Pré-treino",
   "Café da manhã",

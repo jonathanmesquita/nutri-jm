@@ -9,6 +9,9 @@
 import { storage } from "./storage.js";
 import { resumo, validarPerfil, porKg } from "./calculations.js";
 import { criarTelaAlimentos } from "./tela-alimentos.js";
+import { criarTelaDieta, lerDieta, metasDoPerfil } from "./tela-dieta.js";
+import { criarCatalogo } from "./catalogo.js";
+import { totaisDia, resumoDiario, ROTULO_ESTADO } from "./diet.js";
 import {
   APP,
   FATORES_ATIVIDADE,
@@ -150,13 +153,15 @@ function telaHoje() {
       h("p", { class: "nota" }, "GCD/TDEE é uma estimativa de gasto diário. Não é automaticamente a meta da dieta.")
     ),
 
+    consumoDeHoje(perfil),
+
     h(
       "section",
       { class: "cartao", "aria-labelledby": "t-macros" },
       h("h2", { id: "t-macros" }, "Metas de macronutrientes"),
       h(
         "div",
-        { class: "tabela-rolagem" },
+        { class: "tabela-rolagem", tabindex: "0", role: "region", "aria-label": "Tabela de metas de macronutrientes" },
         h(
           "table",
           {},
@@ -189,7 +194,7 @@ function telaHoje() {
             `Proteína e gordura somam ${numero(r.macros.excesso)} kcal a mais que a meta, então não sobra carboidrato. Revise as metas em g/kg ou o objetivo.`
           )
         : null,
-      h("p", { class: "nota" }, "O consumido do dia aparece aqui quando o registro de refeições chegar (fase 4).")
+      h("p", { class: "nota" }, "Proteína e gordura saem do peso (g/kg); o carboidrato é o que sobra da meta.")
     ),
 
     h(
@@ -210,6 +215,57 @@ function telaHoje() {
     ),
 
     avisoSaude()
+  );
+}
+
+/* Consumido × meta, com barra e estado escrito (a cor nunca é a única pista). */
+function consumoDeHoje(perfil) {
+  const catalogo = criarCatalogo(storage);
+  const dieta = lerDieta(storage);
+  const total = totaisDia(dieta, catalogo.buscar);
+  const linhas = resumoDiario(total, metasDoPerfil(perfil, resumo), perfil.peso);
+  const vazia = dieta.refeicoes.every((r) => !r.itens.length);
+  const fmt = (v, casas = 0) => new Intl.NumberFormat("pt-BR", { maximumFractionDigits: casas }).format(v);
+
+  return h(
+    "section",
+    { class: "cartao", "aria-labelledby": "t-consumo" },
+    h("h2", { id: "t-consumo" }, "Consumo de hoje"),
+    vazia
+      ? h("p", {}, "Nenhum alimento na dieta ainda. ", h("a", { href: "#dieta" }, "Montar a dieta do dia"), ".")
+      : h(
+          "ul",
+          { class: "progresso-lista" },
+          linhas.map((l) => {
+            const casas = l.chave === "kcal" ? 0 : 1;
+            const barra = h("span", { class: "barra-preenchida" });
+            /* largura pelo CSSOM: a CSP do app não aceita atributo style */
+            barra.style.width = `${Math.min(100, Math.max(0, l.percentual ?? 0))}%`;
+            const falta = l.diferenca < 0 ? `faltam ${fmt(-l.diferenca, casas)} ${l.unidade}` : l.diferenca > 0 ? `${fmt(l.diferenca, casas)} ${l.unidade} acima` : "exato";
+            return h(
+              "li",
+              { class: `progresso estado-${l.estado ?? "nenhum"}` },
+              h(
+                "div",
+                { class: "progresso-topo" },
+                h("span", { class: "progresso-nome" }, l.rotulo),
+                h("span", { class: "progresso-valor" }, `${fmt(l.consumido, casas)} / ${fmt(l.meta, casas)} ${l.unidade}`)
+              ),
+              h("span", { class: "barra", "aria-hidden": "true" }, barra),
+              h(
+                "span",
+                { class: "progresso-estado" },
+                `${l.percentual === null ? "—" : `${fmt(l.percentual)}%`} · ${ROTULO_ESTADO[l.estado] ?? ""} · ${falta}`,
+                l.chave === "proteina" ? ` · ${fmt(l.consumidoPorKg, 2)} g/kg` : "",
+                l.chave === "carboidrato" ? ` · ${fmt(l.consumidoPorKg, 2)} g/kg` : ""
+              )
+            );
+          })
+        ),
+    !vazia && Object.keys(total.incompleto).length
+      ? h("p", { class: "alerta" }, "Total parcial: há alimento sem todos os valores publicados na fonte. Detalhes na aba Dieta.")
+      : null,
+    vazia ? null : h("p", { class: "nota" }, h("a", { href: "#dieta" }, "Ver a dieta e o resumo completo"))
   );
 }
 
@@ -478,7 +534,6 @@ function telaGlossario() {
 }
 
 const EM_BREVE = {
-  dieta: ["Dieta", "Refeições, alimentos por refeição e subtotais.", 4],
   corpo: ["Corpo", "Bioimpedância, histórico de medições e avatar.", 5],
   compras: ["Compras", "Lista manual e gerada a partir do plano alimentar.", 6]
 };
@@ -499,7 +554,7 @@ const ROTAS = {
   hoje: telaHoje,
   configuracoes: telaConfiguracoes,
   glossario: telaGlossario,
-  dieta: () => telaEmBreve("dieta"),
+  dieta: criarTelaDieta({ h, numero, storage, avisoSaude, lerPerfil, resumo }),
   alimentos: criarTelaAlimentos({ h, numero, storage, avisoSaude }),
   corpo: () => telaEmBreve("corpo"),
   compras: () => telaEmBreve("compras")

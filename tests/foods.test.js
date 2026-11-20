@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { ALIMENTOS } from "../data/foods.js";
 import {
   CATEGORIAS, NUTRIENTES, normalizar, pesquisar, unidadesDe, gramasDe,
-  nutrientesPara, calcular, validarAlimento, montarAlimentoProprio
+  nutrientesPara, calcular, validarAlimento, montarAlimentoProprio, converterQuantidade
 } from "../assets/js/foods.js";
 
 const porId = (id) => ALIMENTOS.find((a) => a.id === id);
@@ -109,4 +109,14 @@ test("alimento próprio: validação e montagem no mesmo formato", () => {
   perto(calcular(a, 2, "unidade").nutrientes.kcal, 180);
   assert.equal(calcular(a, 2, "unidade").nutrientes.fibra, null);
   assert.ok(pesquisar("amendoim pasta", [a]).length === 1);
+});
+
+test("trocar a unidade mantém o peso, não o número", () => {
+  const arroz = porId("taco-3"); // concha = 100 g
+  assert.equal(converterQuantidade(arroz, 250, "g", "concha"), 2.5);
+  assert.equal(converterQuantidade(arroz, 2.5, "concha", "g"), 250);
+  const ovo = porId("taco-488"); // unidade = 45 g
+  assert.equal(converterQuantidade(ovo, 100, "g", "unidade"), 2.2);
+  assert.equal(converterQuantidade(ovo, 10, "g", "unidade"), 0.22);
+  assert.equal(converterQuantidade(ovo, 1, "g", "lata"), null);
 });
