@@ -65,3 +65,17 @@ gere os três de novo e suba `VERSAO` no `service-worker.js`.
 - Números aceitam vírgula ("77,1"): os campos são texto com teclado decimal, porque
   `type="number"` recusa a vírgula.
 - Todo texto entra na página por `textContent`.
+
+## Segurança
+
+`vercel.json` publica os cabeçalhos de segurança. A política de conteúdo (CSP) é a mais fechada
+possível porque o app não precisa de nada de fora: script, estilo, imagem, manifest e service
+worker só do próprio site; nenhuma conexão externa; nenhum script ou estilo dentro do HTML;
+`frame-ancestors 'none'` (nenhum site pode abrir o app num iframe). Também `nosniff`,
+`Referrer-Policy`, `Permissions-Policy` (câmera, microfone e localização desligados) e HSTS.
+O `service-worker.js` vai com `Cache-Control: no-cache`, para a versão nova chegar logo.
+
+**Ao acrescentar algo que venha de fora** (fonte, CDN, API), a CSP bloqueia — é o esperado.
+Libere só aquele endereço, na diretiva certa, e nunca com `'unsafe-inline'` ou `*`.
+
+Os dados ficam no `localStorage` do aparelho. Não há servidor, login nem envio de dado.
