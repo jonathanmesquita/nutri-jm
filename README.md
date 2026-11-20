@@ -11,8 +11,9 @@ Os dados ficam só no aparelho de quem usa (`localStorage`). Endereço: **nutri.
 **Fases 1 a 5 entregues:** estrutura, navegação, armazenamento, configurações, primeira
 execução, TMB, GCD/TDEE, objetivo, metas de macronutrientes, IMC, banco de alimentos, pesquisa,
 calculadora nutricional, refeições, subtotais e resumo diário (e o consumido × meta no painel
-Hoje), **bioimpedância, histórico corporal e avatar**. Compras aparece na navegação e diz que
-chega na fase 6.
+Hoje), bioimpedância, histórico corporal e avatar. Mais o menu **Medicação** (controle de
+canetas GLP-1 / GIP), fora das fases da especificação original. Compras aparece na navegação e
+diz que chega na fase 6.
 
 ## Rodar
 
@@ -48,6 +49,8 @@ assets/js/diet.js        refeições, subtotais e resumo do dia, sem DOM — tes
 assets/js/tela-dieta.js  tela da aba Dieta
 assets/js/body.js        medições, histórico, IMC e avatar, sem DOM — testadas
 assets/js/tela-corpo.js  tela da aba Corpo
+assets/js/meds.js        medicação: estoque, aplicações, rodízio, alertas e sintomas, sem DOM — testadas
+assets/js/tela-medicacao.js  tela da aba Medicação (#medicacao, /estoque, /diario, /ajuda)
 assets/icons/            ícones do app (32, 192, 512, apple-touch) e a arte original
 favicon.ico              16, 32 e 48 px
 tests/                   node --test
@@ -140,6 +143,36 @@ transforma os dois JSON do pacote em `data/foods.js`; o cabeçalho do arquivo di
   rotula ninguém. Pode ser escondido, e a escolha fica salva.
 - O "registro inicial" da especificação traz medidas de uma pessoa real e não entrou. O perfil de
   demonstração tem "Preencher com medições de exemplo", com três medições fictícias.
+
+## Medicação (GLP-1 / GIP)
+
+Menu à parte, a partir de uma segunda especificação (controle de canetas como as de
+tirzepatida e semaglutida). Quatro seções, cada uma com endereço próprio:
+
+- **Início:** contagem para a próxima aplicação, resumo do estoque ("Restam 2 doses / 1,0 mL")
+  com alertas, **registrar aplicação** (data e hora, inclusive retroativa; local num mapa de
+  rodízio que sugere o local usado há mais tempo) e as últimas aplicações.
+- **Estoque:** canetas e frascos com volume total, dose (mg) e volume por aplicação (mL). Saldo
+  = volume total − Σ aplicações; doses restantes = ⌊saldo ÷ volume por aplicação⌋. Uma caneta
+  "em uso" por vez, que é a descontada. Alertas de última dose, de até quando o estoque dura
+  (doses × intervalo), do prazo fora da geladeira (abertura + dias da bula) e da validade.
+- **Diário:** check-in de sintomas e a evolução dose × peso, com o peso das medições da aba Corpo
+  (sem interpolar). O gráfico fica para depois.
+- **Ajuda:** perguntas frequentes e o link do VigiMed (Anvisa) para relatar evento adverso.
+
+Decisões, todas para não induzir erro de dose:
+
+- **O app só registra.** Dose, volume, intervalo e prazo fora da geladeira são digitados pela
+  pessoa, da caixa, da bula ou da prescrição. Sem intervalo configurado, não há contagem — o app
+  não supõe "semanal". Nenhum texto sugere dose, e a tela diz para nunca mudar a dose sem
+  orientação médica.
+- **Sem catálogo de marcas.** A lista da especificação veio de uma resposta de IA (o próprio
+  arquivo avisa) e traz nomes que não puderam ser conferidos numa fonte oficial (a consulta da
+  Anvisa não estava acessível na sessão). Um catálogo errado causaria o erro de dose que ele
+  promete evitar. Para trazer um, a fonte tem que ser a base de dados aberta da Anvisa.
+- **Sem os contatos de exemplo** (WhatsApp e e-mail fictícios da especificação). Só o link
+  oficial do VigiMed.
+- Tudo fica no navegador, como o resto do app.
 
 ## Segurança
 
