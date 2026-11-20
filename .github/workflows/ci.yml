@@ -15,5 +15,9 @@ jobs:
           node-version: 22
       - name: Sintaxe de todo .js
         run: find . -name "*.js" -not -path "./node_modules/*" -print0 | xargs -0 -n1 node --check
+      - name: vercel.json e manifest são JSON válido, com CSP
+        run: |
+          node -e "const c=require('./vercel.json');const csp=c.headers[0].headers.find(h=>h.key==='Content-Security-Policy');if(!csp||/unsafe-inline|unsafe-eval|\*/.test(csp.value))process.exit(1)"
+          node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8'))"
       - name: Testes dos cálculos
         run: npm test
