@@ -929,6 +929,64 @@ textarea {
   color: var(--cinza);
 }
 
+/* ---------- compras ---------- */
+
+.grupo-compras h3 {
+  margin: 1rem 0 0.4rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cinza);
+}
+
+.compras {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.compra {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.35rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--areia);
+}
+
+.compra-nome {
+  font-weight: 600;
+}
+
+.compra-qtd {
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: var(--cinza);
+}
+
+.compra-controles {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+}
+
+.status-comprado .compra-nome {
+  text-decoration: line-through;
+  color: var(--cinza);
+}
+
+.status-ignorar .compra-nome {
+  color: var(--cinza);
+  font-style: italic;
+}
+
+@media (min-width: 560px) {
+  .compra {
+    grid-template-columns: minmax(0, 1fr) minmax(12rem, 16rem);
+    align-items: center;
+  }
+}
+
 /* ---------- glossário ---------- */
 
 .glossario dt {

@@ -14,6 +14,7 @@ import { criarCatalogo } from "./catalogo.js";
 import { criarTelaCorpo, lerMedicoes, dataBr } from "./tela-corpo.js";
 import { ultimaMedicao } from "./body.js";
 import { criarTelaMedicacao } from "./tela-medicacao.js";
+import { criarTelaCompras } from "./tela-compras.js";
 import { totaisDia, resumoDiario, ROTULO_ESTADO } from "./diet.js";
 import {
   APP,
@@ -541,20 +542,6 @@ function telaGlossario() {
   );
 }
 
-const EM_BREVE = {
-  compras: ["Compras", "Lista manual e gerada a partir do plano alimentar.", 6]
-};
-
-function telaEmBreve(rota) {
-  const [titulo, descricao, fase] = EM_BREVE[rota];
-  return h(
-    "div",
-    { class: "pilha" },
-    h("header", { class: "cabecalho-tela" }, h("h1", { id: "titulo-tela" }, titulo)),
-    h("section", { class: "cartao" }, h("p", {}, descricao), h("p", { class: "nota" }, `Chega na fase ${fase}.`))
-  );
-}
-
 /* ---------- roteamento por hash ---------- */
 
 const ROTAS = {
@@ -564,7 +551,7 @@ const ROTAS = {
   dieta: criarTelaDieta({ h, numero, storage, avisoSaude, lerPerfil, resumo }),
   alimentos: criarTelaAlimentos({ h, numero, storage, avisoSaude }),
   corpo: criarTelaCorpo({ h, storage, avisoSaude, lerPerfil, salvarPerfil }),
-  compras: () => telaEmBreve("compras"),
+  compras: criarTelaCompras({ h, storage }),
   medicacao: criarTelaMedicacao({ h, storage })
 };
 
