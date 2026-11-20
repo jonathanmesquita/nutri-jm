@@ -8,11 +8,12 @@ Os dados ficam só no aparelho de quem usa (`localStorage`). Endereço: **nutri.
 
 ## Estado
 
-**Fases 1 a 6 entregues:** estrutura, navegação, armazenamento, configurações, primeira
+**Fases 1 a 7 entregues — a V1 da especificação está completa:** estrutura, navegação, armazenamento, configurações, primeira
 execução, TMB, GCD/TDEE, objetivo, metas de macronutrientes, IMC, banco de alimentos, pesquisa,
 calculadora nutricional, refeições, subtotais e resumo diário (e o consumido × meta no painel
 Hoje), bioimpedância, histórico corporal e avatar. Mais o menu **Medicação** (controle de
-canetas GLP-1 / GIP), fora das fases da especificação original, e a **lista de compras**.
+canetas GLP-1 / GIP), fora das fases da especificação original, a lista de compras e o
+**backup** (exportar e importar JSON).
 
 ## Rodar
 
@@ -52,6 +53,7 @@ assets/js/meds.js        medicação: estoque, aplicações, rodízio, alertas e
 assets/js/tela-medicacao.js  tela da aba Medicação (#medicacao, /estoque, /diario, /ajuda)
 assets/js/shopping.js    lista de compras: manual, gerada da dieta, status, sem DOM — testada
 assets/js/tela-compras.js  tela da aba Compras
+assets/js/backup.js      exportar, conferir e importar o backup JSON, sem DOM — testado
 assets/icons/            ícones do app (32, 192, 512, apple-touch) e a arte original
 favicon.ico              16, 32 e 48 px
 tests/                   node --test
@@ -144,6 +146,37 @@ transforma os dois JSON do pacote em `data/foods.js`; o cabeçalho do arquivo di
   rotula ninguém. Pode ser escondido, e a escolha fica salva.
 - O "registro inicial" da especificação traz medidas de uma pessoa real e não entrou. O perfil de
   demonstração tem "Preencher com medições de exemplo", com três medições fictícias.
+
+## Critérios de aceite da V1 (especificação, item 34)
+
+| Critério | Onde |
+|---|---|
+| Funciona só abrindo no navegador, no celular | site estático, sem build; conferido de 320 a 1440 px |
+| Manifest PWA, Service Worker, offline depois do primeiro acesso | `manifest.webmanifest`, `service-worker.js` |
+| Pesquisar alimentos e calcular nutrientes pela quantidade | aba Alimentos (TACO) |
+| Refeições, subtotal por refeição e total diário | aba Dieta |
+| TMB calculada e medida, GCD/TDEE, FA, objetivo, metas de proteína, gordura e carboidrato | Configurações e Hoje |
+| IMC, bioimpedância e histórico corporal | aba Corpo |
+| Dieta atual cadastrada | dia de exemplo fictício (o plano da especificação tem nome de pessoa real) |
+| Lista de compras | aba Compras |
+| Persistência no `localStorage` | `assets/js/storage.js`, a única porta |
+| Exportar e importar backup JSON | Configurações › Dados deste navegador |
+| Sem erros no console | todas as rotas, nos testes de tela |
+
+## Backup
+
+Em **Configurações › Dados deste navegador**:
+
+- **Exportar** baixa `nutri-jm-backup-AAAA-MM-DD.json` com tudo o que o app grava (perfil,
+  dieta, alimentos cadastrados, medições, preferências, compras e medicação).
+- **Importar** confere o arquivo **inteiro antes de gravar**: tem que ser do Nutri JM, da versão
+  suportada, com perfil, medições e alimentos válidos; arquivo errado é recusado com o motivo e
+  nada muda. Depois mostra um resumo (refeições, medições, canetas…) e pede confirmação, porque
+  **substitui** os dados atuais.
+- **Apagar todos os meus dados** remove só as chaves do app.
+- Um teste lê o código e reprova se alguma tela passar a gravar uma chave que fique fora do
+  backup (`CHAVES` em `backup.js`).
+- O arquivo tem dado de saúde: a tela lembra de guardá-lo num lugar seguro.
 
 ## Compras
 

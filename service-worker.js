@@ -4,7 +4,7 @@
  * na ativação e o novo é baixado inteiro.
  */
 
-const VERSAO = "nutrijm-v8";
+const VERSAO = "nutrijm-v9";
 
 const ARQUIVOS = [
   "./",
@@ -31,6 +31,7 @@ const ARQUIVOS = [
   "./assets/js/tela-medicacao.js",
   "./assets/js/shopping.js",
   "./assets/js/tela-compras.js",
+  "./assets/js/backup.js",
   "./data/foods.js",
   "./data/default-data.js"
 ];

@@ -987,6 +987,33 @@ textarea {
   }
 }
 
+/* ---------- backup ---------- */
+
+/* largura total e corte: o texto "nenhum arquivo escolhido" não encolhia e alargava a página a 320 px */
+input[type="file"] {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  min-height: 44px;
+  font: inherit;
+}
+
+input[type="file"]::file-selector-button {
+  min-height: 40px;
+  margin-right: 0.75rem;
+  padding: 0 1rem;
+
+  border: 1px solid var(--tinta);
+  border-radius: 999px;
+
+  background: transparent;
+  color: var(--tinta);
+
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 /* ---------- glossário ---------- */
 
 .glossario dt {
