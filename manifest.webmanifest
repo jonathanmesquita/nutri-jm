@@ -1,0 +1,12 @@
+{
+  "name": "Nutri JM",
+  "short_name": "Nutri JM",
+  "description": "Dieta, macronutrientes, composição corporal e lista de compras.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F2EEE6",
+  "theme_color": "#F2EEE6",
+  "lang": "pt-BR",
+  "icons": []
+}

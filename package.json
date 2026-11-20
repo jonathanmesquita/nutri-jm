@@ -1,0 +1,10 @@
+{
+  "name": "nutri-jm",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Nutri JM — dieta, macros e composição corporal no navegador.",
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  }
+}

@@ -1,0 +1,440 @@
+/*
+ * Paleta do jm.dev.br com os tons que passam no contraste sobre #F2EEE6:
+ * tinta 14,67 · terracota de texto 5,05 · oliva 4,77 · cinza 4,87.
+ * Borda de campo usa a tinta (o cinza claro da paleta dá 2,67, abaixo de 3:1).
+ */
+
+:root {
+  --fundo: #f2eee6;
+  --cartao: #fbf9f5;
+  --tinta: #1b1d1a;
+  --terracota: #a66a4c;
+  --terracota-texto: #8f573c;
+  --oliva: #5f6d55;
+  --areia: #d8cfc2;
+  --cinza: #626965;
+  --perigo: #9b2c2c;
+
+  --fonte: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --altura-abas: 64px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+
+  padding-bottom: calc(var(--altura-abas) + env(safe-area-inset-bottom));
+
+  background: var(--fundo);
+  color: var(--tinta);
+
+  font-family: var(--fonte);
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--terracota);
+  outline-offset: 2px;
+}
+
+.pular {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 10;
+  padding: 0.5rem 0.75rem;
+  background: var(--tinta);
+  color: var(--fundo);
+}
+
+.pular:focus {
+  top: 1rem;
+}
+
+/* ---------- topo e abas ---------- */
+
+.topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 0.9rem 1rem;
+}
+
+.marca {
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+
+.topo nav {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.topo nav a {
+  color: var(--cinza);
+  text-underline-offset: 3px;
+}
+
+.topo nav a[aria-current="page"] {
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+.abas {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 5;
+
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+
+  height: calc(var(--altura-abas) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+
+  border-top: 1px solid var(--areia);
+  background: var(--cartao);
+}
+
+.abas a {
+  display: grid;
+  place-items: center;
+
+  min-height: 44px;
+
+  color: var(--cinza);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.abas a[aria-current="page"] {
+  color: var(--terracota-texto);
+  box-shadow: inset 0 3px 0 var(--terracota);
+}
+
+/* ---------- conteúdo ---------- */
+
+main {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+main:focus {
+  outline: none;
+}
+
+h1 {
+  margin: 0.25rem 0 0;
+  font-size: 1.6rem;
+}
+
+h1:focus {
+  outline: none;
+}
+
+h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+}
+
+.pilha {
+  display: grid;
+  gap: 1rem;
+}
+
+.cabecalho-tela .sutil {
+  margin: 0;
+  color: var(--cinza);
+}
+
+.cartao {
+  padding: 1.1rem 1.1rem 1rem;
+
+  border: 1px solid var(--areia);
+  border-radius: 12px;
+
+  background: var(--cartao);
+}
+
+.cartao > p:first-child {
+  margin-top: 0;
+}
+
+.lista {
+  margin: 0;
+}
+
+.linha {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+
+  padding: 0.45rem 0;
+
+  border-bottom: 1px solid var(--areia);
+}
+
+.linha:last-child {
+  border-bottom: 0;
+}
+
+.linha dt {
+  color: var(--cinza);
+}
+
+.linha dd {
+  margin: 0;
+
+  display: grid;
+  justify-items: end;
+
+  font-size: 1.1rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.extra {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--cinza);
+}
+
+.nota,
+.ajuda {
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  color: var(--cinza);
+}
+
+.alerta {
+  margin: 0.75rem 0 0;
+  padding: 0.6rem 0.75rem;
+
+  border-left: 4px solid var(--terracota);
+  background: #f7e9e1;
+
+  color: var(--tinta);
+  font-size: 0.9rem;
+}
+
+.aviso-saude {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: var(--cinza);
+}
+
+/* ---------- tabela ---------- */
+
+.tabela-rolagem {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+th,
+td {
+  padding: 0.5rem 0.4rem;
+  border-bottom: 1px solid var(--areia);
+  text-align: right;
+}
+
+th[scope="row"],
+thead th:first-child {
+  text-align: left;
+}
+
+thead th {
+  font-size: 0.8rem;
+  color: var(--cinza);
+  font-weight: 600;
+}
+
+/* ---------- formulário ---------- */
+
+.formulario {
+  display: grid;
+  gap: 1rem;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  gap: 0.9rem;
+}
+
+legend {
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.campo {
+  min-width: 0;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.campo label {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+input[type="number"],
+input[type="text"],
+select {
+  width: 100%;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 0.5rem 0.7rem;
+
+  border: 1px solid var(--tinta);
+  border-radius: 8px;
+
+  background: #fff;
+  color: var(--tinta);
+
+  font: inherit;
+}
+
+input[aria-invalid="true"] {
+  border-color: var(--perigo);
+  border-width: 2px;
+}
+
+.erro,
+.erro-geral {
+  margin: 0;
+  color: var(--perigo);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.erro:empty,
+.erro-geral:empty {
+  display: none;
+}
+
+.erro:not(:empty)::before,
+.erro-geral:not(:empty)::before {
+  content: "✕ ";
+}
+
+.opcoes {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.opcoes label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+}
+
+.opcoes input {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: var(--terracota);
+}
+
+/* ---------- botões ---------- */
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 48px;
+  padding: 0.6rem 1.1rem;
+
+  border: 1px solid var(--tinta);
+  border-radius: 999px;
+
+  background: transparent;
+  color: var(--tinta);
+
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+
+  cursor: pointer;
+}
+
+.botao-principal {
+  background: var(--tinta);
+  color: var(--fundo);
+}
+
+.botao-perigo {
+  border-color: var(--perigo);
+  color: var(--perigo);
+}
+
+/* ---------- glossário ---------- */
+
+.glossario dt {
+  font-weight: 700;
+  margin-top: 0.75rem;
+}
+
+.glossario dt:first-child {
+  margin-top: 0;
+}
+
+.glossario dd {
+  margin: 0.2rem 0 0;
+  color: var(--cinza);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: 768px) {
+  .abas {
+    max-width: 44rem;
+    margin: 0 auto;
+    border: 1px solid var(--areia);
+    border-bottom: 0;
+    border-radius: 12px 12px 0 0;
+  }
+}
