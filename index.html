@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nutri JM</title>
+  <meta name="description" content="Dieta, macronutrientes, composição corporal e lista de compras no navegador. Sem login; os dados ficam no seu aparelho." />
+  <meta name="theme-color" content="#F2EEE6" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./assets/css/style.css" />
+  <script type="module" src="./assets/js/app.js"></script>
+</head>
+<body>
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="topo">
+    <a class="marca" href="#hoje">Nutri JM</a>
+    <nav aria-label="Ajuda e configurações">
+      <a href="#glossario" data-rota="glossario">Glossário</a>
+      <a href="#configuracoes" data-rota="configuracoes">Configurações</a>
+    </nav>
+  </header>
+
+  <main id="conteudo" tabindex="-1"></main>
+
+  <nav class="abas" aria-label="Áreas do app">
+    <a href="#hoje" data-rota="hoje">Hoje</a>
+    <a href="#dieta" data-rota="dieta">Dieta</a>
+    <a href="#alimentos" data-rota="alimentos">Alimentos</a>
+    <a href="#corpo" data-rota="corpo">Corpo</a>
+    <a href="#compras" data-rota="compras">Compras</a>
+  </nav>
+
+  <noscript><p class="cartao">O Nutri JM precisa de JavaScript.</p></noscript>
+</body>
+</html>
