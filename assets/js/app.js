@@ -8,6 +8,7 @@
 
 import { storage } from "./storage.js";
 import { resumo, validarPerfil, porKg } from "./calculations.js";
+import { criarTelaAlimentos } from "./tela-alimentos.js";
 import {
   APP,
   FATORES_ATIVIDADE,
@@ -452,7 +453,10 @@ const GLOSSARIO = [
   ["Macronutrientes", "Proteínas, carboidratos e gorduras, nutrientes utilizados pelo corpo em maiores quantidades."],
   ["kcal", "Unidade utilizada para representar energia dos alimentos."],
   ["g/kg", "Quantidade de um nutriente em gramas para cada quilograma de peso corporal."],
-  ["IMC", "Relação entre peso e altura. Não diferencia massa muscular de gordura."]
+  ["IMC", "Relação entre peso e altura. Não diferencia massa muscular de gordura."],
+  ["TACO", "Tabela Brasileira de Composição de Alimentos (NEPA/UNICAMP, 4ª ed., 2011). É a fonte dos valores nutricionais do app, por 100 g de parte comestível."],
+  ["Traço", "Quantidade presente, mas abaixo do limite que a análise consegue medir. Entra na conta como zero."],
+  ["— (sem dado)", "A fonte não publica esse valor. O app não estima: deixa em branco."]
 ];
 
 function telaGlossario() {
@@ -475,7 +479,6 @@ function telaGlossario() {
 
 const EM_BREVE = {
   dieta: ["Dieta", "Refeições, alimentos por refeição e subtotais.", 4],
-  alimentos: ["Alimentos", "Banco de alimentos, pesquisa e calculadora por quantidade.", 3],
   corpo: ["Corpo", "Bioimpedância, histórico de medições e avatar.", 5],
   compras: ["Compras", "Lista manual e gerada a partir do plano alimentar.", 6]
 };
@@ -497,7 +500,7 @@ const ROTAS = {
   configuracoes: telaConfiguracoes,
   glossario: telaGlossario,
   dieta: () => telaEmBreve("dieta"),
-  alimentos: () => telaEmBreve("alimentos"),
+  alimentos: criarTelaAlimentos({ h, numero, storage, avisoSaude }),
   corpo: () => telaEmBreve("corpo"),
   compras: () => telaEmBreve("compras")
 };

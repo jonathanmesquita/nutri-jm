@@ -401,6 +401,98 @@ input[aria-invalid="true"] {
   color: var(--perigo);
 }
 
+/* ---------- alimentos ---------- */
+
+input[type="search"] {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.5rem 0.8rem;
+
+  border: 1px solid var(--tinta);
+  border-radius: 8px;
+
+  background: #fff;
+  color: var(--tinta);
+
+  font: inherit;
+}
+
+h2 label {
+  font: inherit;
+}
+
+.resultados {
+  display: grid;
+  gap: 0.4rem;
+
+  margin: 0.5rem 0 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.resultado {
+  display: grid;
+  gap: 0.15rem;
+
+  width: 100%;
+  min-height: 48px;
+  padding: 0.55rem 0.75rem;
+
+  border: 1px solid var(--areia);
+  border-radius: 8px;
+
+  background: var(--fundo);
+  color: var(--tinta);
+
+  font: inherit;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.resultado:hover {
+  border-color: var(--tinta);
+}
+
+.resultado[aria-pressed="true"] {
+  border: 2px solid var(--terracota);
+}
+
+.resultado-nome {
+  font-weight: 600;
+}
+
+.resultado-meta {
+  font-size: 0.8rem;
+  color: var(--cinza);
+}
+
+.linha-campos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.cartao .sutil {
+  margin: -0.4rem 0 0;
+  color: var(--cinza);
+  font-size: 0.9rem;
+}
+
+details.cartao > summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+details.cartao[open] > summary {
+  margin-bottom: 0.75rem;
+}
+
 /* ---------- glossário ---------- */
 
 .glossario dt {
