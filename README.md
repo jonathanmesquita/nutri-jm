@@ -37,8 +37,18 @@ assets/js/app.js         telas e roteamento por hash (#hoje, #configuracoes…)
 assets/js/calculations.js  fórmulas puras, sem DOM — testadas
 assets/js/storage.js     única porta para o localStorage (prefixo nutrijm:)
 data/default-data.js     configuração central: fatores, objetivos, macros, faixas de IMC
+assets/icons/            ícones do app (192, 512, apple-touch) e a arte original
+favicon.ico              16, 32 e 48 px
 tests/                   node --test
 ```
+
+### Ícone
+
+`assets/icons/nutri-jm-original.png` (1254 px) é a arte original. O `favicon.ico` guarda os
+quadros de 16, 32 e 48 px do `.ico` original, copiados sem reamostrar. `icon-192.png` e
+`icon-512.png` saem da arte original. O `apple-touch-icon.png` (180 px) tem fundo opaco no verde
+da moldura, porque o iPhone ignora a transparência e aplica a própria máscara. Ao trocar a arte,
+gere os três de novo e suba `VERSAO` no `service-worker.js`.
 
 ## Decisões e limites
 
