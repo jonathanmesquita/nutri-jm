@@ -15,6 +15,7 @@ import { criarTelaCorpo, lerMedicoes, dataBr } from "./tela-corpo.js";
 import { ultimaMedicao } from "./body.js";
 import { criarTelaMedicacao } from "./tela-medicacao.js";
 import { criarTelaCompras } from "./tela-compras.js";
+import { exportar, nomeArquivo, lerBackup, importar, apagarTudo } from "./backup.js";
 import { totaisDia, resumoDiario, ROTULO_ESTADO } from "./diet.js";
 import {
   APP,
@@ -37,7 +38,8 @@ function h(tag, atributos = {}, ...filhos) {
     else if (v === true) el.setAttribute(k, "");
     else el.setAttribute(k, v);
   }
-  for (const f of filhos.flat()) {
+  /* listas aninhadas em qualquer nível (ex.: pares [dt, dd] do glossário) */
+  for (const f of filhos.flat(Infinity)) {
     if (f === null || f === undefined || f === false) continue;
     el.append(f instanceof Node ? f : document.createTextNode(String(f)));
   }
@@ -94,6 +96,7 @@ function telaBoasVindas() {
         "Ver com perfil de demonstração"
       )
     ),
+    h("p", { class: "nota" }, "Já usa o app em outro aparelho? ", h("a", { href: "#configuracoes" }, "Restaurar um backup"), "."),
     avisoSaude()
   );
 }
@@ -481,25 +484,97 @@ function telaConfiguracoes() {
     { class: "pilha" },
     h("header", { class: "cabecalho-tela" }, h("h1", { id: "titulo-tela" }, "Configurações")),
     form,
-    lerPerfil()
+    blocoDados()
+  );
+}
+
+/* ---------- backup (especificação, item 24) ---------- */
+
+function blocoDados() {
+  const status = h("p", { class: "nota", id: "backup-status", role: "status" });
+  const temDados = Boolean(lerPerfil()) || ["dieta", "medicoes", "compras", "medicacao", "alimentos"].some((k) => storage.get(k));
+
+  const baixar = () => {
+    const conteudo = JSON.stringify(exportar(storage), null, 2);
+    const url = URL.createObjectURL(new Blob([conteudo], { type: "application/json" }));
+    const link = h("a", { href: url, download: nomeArquivo() });
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    status.textContent = `Backup baixado: ${nomeArquivo()}. Guarde num lugar seguro: ele tem seus dados de saúde.`;
+  };
+
+  const arquivo = h("input", { id: "backup-arquivo", type: "file", accept: "application/json,.json", "aria-describedby": "backup-ajuda" });
+  arquivo.addEventListener("change", async () => {
+    const f = arquivo.files?.[0];
+    if (!f) return;
+    let texto;
+    try {
+      texto = await f.text();
+    } catch {
+      status.textContent = "Não foi possível ler o arquivo.";
+      return;
+    }
+    const lido = lerBackup(texto);
+    arquivo.value = "";
+    if (!lido.ok) {
+      status.textContent = `Backup não importado: ${lido.erro}`;
+      return;
+    }
+    const r = lido.resumo;
+    const quando = lido.exportadoEm ? ` de ${new Date(lido.exportadoEm).toLocaleString("pt-BR")}` : "";
+    const confirmar = window.confirm(
+      `Importar o backup${quando}?\n\n` +
+        `Perfil: ${r.perfil ? "sim" : "não"} · refeições: ${r.refeicoes} · medições: ${r.medicoes} · ` +
+        `alimentos cadastrados: ${r.alimentosProprios} · itens de compra: ${r.itensDeCompra} · canetas: ${r.canetas} · aplicações: ${r.aplicacoes}\n\n` +
+        "Os dados atuais deste navegador serão substituídos."
+    );
+    if (!confirmar) {
+      status.textContent = "Importação cancelada. Nada mudou.";
+      return;
+    }
+    if (!importar(storage, lido.dados)) {
+      status.textContent = "O navegador não deixou gravar tudo (armazenamento cheio ou bloqueado).";
+      return;
+    }
+    irPara(lido.dados.perfil ? "hoje" : "configuracoes");
+  });
+
+  return h(
+    "section",
+    { class: "cartao", "aria-labelledby": "t-dados" },
+    h("h2", { id: "t-dados" }, "Dados deste navegador"),
+    h("p", {}, "Tudo fica salvo só aqui, sem conta e sem servidor. Para levar para outro aparelho ou não perder nada, faça um backup."),
+    h(
+      "div",
+      { class: "acoes" },
+      h("button", { type: "button", class: "botao botao-principal", disabled: !temDados, onclick: baixar }, "Exportar backup (JSON)")
+    ),
+    h(
+      "div",
+      { class: "campo" },
+      h("label", { for: "backup-arquivo" }, "Importar backup"),
+      arquivo,
+      h("p", { class: "ajuda", id: "backup-ajuda" }, "Arquivo .json exportado pelo Nutri JM. Ele é conferido antes, e você confirma antes de substituir os dados atuais.")
+    ),
+    status,
+    temDados
       ? h(
-          "section",
-          { class: "cartao", "aria-labelledby": "t-apagar" },
-          h("h2", { id: "t-apagar" }, "Dados deste navegador"),
-          h("p", {}, "Tudo fica salvo só aqui. Apagar remove o perfil e volta para a tela inicial."),
+          "div",
+          { class: "acoes" },
           h(
             "button",
             {
               type: "button",
               class: "botao botao-perigo",
               onclick: () => {
-                if (window.confirm("Apagar o perfil salvo neste navegador?")) {
-                  storage.remove("perfil");
-                  irPara("hoje");
-                }
+                if (!window.confirm("Apagar TODOS os dados do Nutri JM neste navegador (perfil, dieta, medições, compras e medicação)? Faça um backup antes, se quiser guardar.")) return;
+                apagarTudo(storage);
+                irPara("hoje");
               }
             },
-            "Apagar meus dados"
+            "Apagar todos os meus dados"
           )
         )
       : null
