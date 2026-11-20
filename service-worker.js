@@ -4,16 +4,18 @@
  * na ativação e o novo é baixado inteiro.
  */
 
-const VERSAO = "nutrijm-v2";
+const VERSAO = "nutrijm-v3";
 
 const ARQUIVOS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./favicon.ico",
-  "./assets/icons/icon-192.png",
-  "./assets/icons/icon-512.png",
-  "./assets/icons/apple-touch-icon.png",
+  "./favicon.ico?v=2",
+  "./assets/icons/icon-32.png?v=2",
+  "./assets/icons/icon-192.png?v=2",
+  "./assets/icons/icon-512.png?v=2",
+  "./assets/icons/apple-touch-icon.png?v=2",
   "./assets/css/style.css",
   "./assets/js/app.js",
   "./assets/js/storage.js",
