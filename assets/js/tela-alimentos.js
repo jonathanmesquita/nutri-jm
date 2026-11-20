@@ -11,19 +11,18 @@ import {
   pesquisar,
   unidadesDe,
   calcular,
+  converterQuantidade,
   validarAlimento,
   montarAlimentoProprio
 } from "./foods.js";
 
-const CHAVE_PROPRIOS = "alimentos";
+import { criarCatalogo, CHAVE_PROPRIOS } from "./catalogo.js";
 
 /* O que fica na memória enquanto a pessoa navega entre as abas. */
 const estado = { consulta: "", selecionado: null, quantidade: "100", unidade: "g" };
 
 export function criarTelaAlimentos({ h, numero, storage, avisoSaude }) {
-  const proprios = () => storage.get(CHAVE_PROPRIOS, []);
-  const todos = () => [...proprios(), ...ALIMENTOS];
-  const porId = (id) => todos().find((a) => a.id === id) ?? null;
+  const { proprios, todos, buscar: porId } = criarCatalogo(storage);
 
   /* número, "Tr" ou null → texto da tela, sem nunca transformar ausência em zero */
   function valorNutriente(v, { unidade, casas }) {
@@ -164,7 +163,13 @@ export function criarTelaAlimentos({ h, numero, storage, avisoSaude }) {
         );
       }
       inputQtd.addEventListener("input", atualizar);
-      seletorUnidade.addEventListener("change", atualizar);
+      seletorUnidade.addEventListener("change", () => {
+        /* mesma quantidade em peso na unidade nova: 100 g de ovo viram 2,2 unidades, não 100 */
+        const qtd = Number(String(inputQtd.value).replace(",", ".").trim());
+        const convertida = converterQuantidade(a, qtd, estado.unidade, seletorUnidade.value);
+        if (convertida) inputQtd.value = String(convertida).replace(".", ",");
+        atualizar();
+      });
 
       const semEnergia = a.por100.kcal === null;
 
@@ -183,7 +188,7 @@ export function criarTelaAlimentos({ h, numero, storage, avisoSaude }) {
         resumoGramas,
         h(
           "div",
-          { class: "tabela-rolagem" },
+          { class: "tabela-rolagem", tabindex: "0", role: "region", "aria-label": "Tabela de nutrientes" },
           h(
             "table",
             {},

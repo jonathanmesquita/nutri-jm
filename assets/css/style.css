@@ -159,6 +159,12 @@ h2 {
   gap: 1rem;
 }
 
+/* Item de grade não encolhe abaixo do conteúdo sem isso: uma tabela larga alargava a página
+   inteira no celular, em vez de rolar dentro de .tabela-rolagem. */
+.pilha > * {
+  min-width: 0;
+}
+
 .cabecalho-tela .sutil {
   margin: 0;
   color: var(--cinza);
@@ -244,7 +250,10 @@ h2 {
 
 /* ---------- tabela ---------- */
 
+/* position: relative segura o texto só para leitor de tela (.visually-hidden, absoluto)
+   dentro da moldura; sem isso ele escapava e alargava a página no celular. */
 .tabela-rolagem {
+  position: relative;
   overflow-x: auto;
 }
 
@@ -491,6 +500,202 @@ details.cartao > summary {
 
 details.cartao[open] > summary {
   margin-bottom: 0.75rem;
+}
+
+/* ---------- dieta ---------- */
+
+.refeicao h2 {
+  scroll-margin-top: 1rem;
+}
+
+.horario {
+  font-weight: 400;
+  color: var(--cinza);
+}
+
+.itens {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.35rem 0.6rem;
+  align-items: center;
+
+  padding: 0.6rem 0;
+
+  border-bottom: 1px solid var(--areia);
+}
+
+.item-nome {
+  font-weight: 600;
+}
+
+.item-controles {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(4.5rem, 6rem) minmax(0, 1fr);
+  gap: 0.5rem;
+}
+
+.item-valores {
+  font-size: 0.85rem;
+  color: var(--cinza);
+  font-variant-numeric: tabular-nums;
+}
+
+.item .botao-icone {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.botao-icone {
+  display: inline-grid;
+  place-items: center;
+
+  min-width: 44px;
+  min-height: 44px;
+
+  border: 1px solid var(--areia);
+  border-radius: 8px;
+
+  background: transparent;
+  color: var(--tinta);
+
+  font: inherit;
+  cursor: pointer;
+}
+
+.botao-icone:hover {
+  border-color: var(--tinta);
+}
+
+.busca-refeicao {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.subtotal {
+  margin: 0.75rem 0 0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 8px;
+  background: var(--fundo);
+}
+
+.subtotal .linha dd {
+  font-size: 1rem;
+}
+
+.editar-refeicao {
+  margin-top: 0.75rem;
+}
+
+.editar-refeicao > summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: var(--cinza);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.botao:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+caption {
+  padding-bottom: 0.4rem;
+  text-align: left;
+  font-weight: 700;
+}
+
+tfoot th,
+tfoot td {
+  font-weight: 700;
+  border-bottom: 0;
+}
+
+.tabela-resumo td,
+.tabela-resumo th {
+  white-space: nowrap;
+}
+
+.sublinha th,
+.sublinha td {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--cinza);
+}
+
+/* ---------- progresso (Hoje) ---------- */
+
+.progresso-lista {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.progresso-topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.progresso-nome {
+  font-weight: 600;
+}
+
+.progresso-valor {
+  font-weight: 650;
+}
+
+.barra {
+  display: block;
+  height: 10px;
+  margin: 0.35rem 0;
+
+  border: 1px solid var(--tinta);
+  border-radius: 999px;
+
+  background: var(--fundo);
+  overflow: hidden;
+}
+
+.barra-preenchida {
+  display: block;
+  height: 100%;
+  background: var(--cinza);
+}
+
+.estado-proximo .barra-preenchida {
+  background: var(--oliva);
+}
+
+.estado-atingido .barra-preenchida {
+  background: var(--tinta);
+}
+
+.estado-acima .barra-preenchida {
+  background: var(--terracota);
+}
+
+.progresso-estado {
+  font-size: 0.82rem;
+  color: var(--cinza);
+}
+
+.estado-acima .progresso-estado {
+  color: var(--terracota-texto);
+  font-weight: 600;
 }
 
 /* ---------- glossário ---------- */

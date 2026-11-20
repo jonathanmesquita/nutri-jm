@@ -96,6 +96,19 @@ export function gramasDe(alimento, quantidade, chaveUnidade = "g") {
   return quantidade * unidade.gramas;
 }
 
+/*
+ * Ao trocar a unidade, mantém o mesmo peso: 250 g de arroz viram 2,5 conchas (100 g cada),
+ * não 250 conchas. Arredonda para uma casa (duas abaixo de 1), que é o que se digita.
+ */
+export function converterQuantidade(alimento, quantidade, de, para) {
+  const gramas = gramasDe(alimento, quantidade, de);
+  const destino = unidadesDe(alimento).find((u) => u.chave === para);
+  if (gramas === null || !destino) return null;
+  const bruto = gramas / destino.gramas;
+  const casas = bruto < 1 ? 100 : 10;
+  return Math.round(bruto * casas) / casas || (bruto > 0 ? 0.01 : 0);
+}
+
 /* ---------- calculadora ---------- */
 
 /* result = (nutrientePor100 × quantidade) / 100, mantendo "Tr" e null como estão. */

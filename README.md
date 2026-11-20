@@ -8,10 +8,10 @@ Os dados ficam só no aparelho de quem usa (`localStorage`). Endereço: **nutri.
 
 ## Estado
 
-**Fases 1 a 3 entregues:** estrutura, navegação, armazenamento, configurações, primeira
-execução, TMB, GCD/TDEE, objetivo, metas de macronutrientes, IMC, **banco de alimentos,
-pesquisa e calculadora nutricional**. Dieta, Corpo e Compras aparecem na navegação e dizem em
-que fase chegam (4 a 6).
+**Fases 1 a 4 entregues:** estrutura, navegação, armazenamento, configurações, primeira
+execução, TMB, GCD/TDEE, objetivo, metas de macronutrientes, IMC, banco de alimentos, pesquisa,
+calculadora nutricional, **refeições, subtotais e resumo diário** (e o consumido × meta no
+painel Hoje). Corpo e Compras aparecem na navegação e dizem em que fase chegam (5 e 6).
 
 ## Rodar
 
@@ -42,6 +42,9 @@ data/foods.js            597 alimentos da TACO (GERADO — ver "Alimentos")
 assets/js/foods.js       pesquisa, unidades e calculadora, sem DOM — testadas
 assets/js/tela-alimentos.js  tela da aba Alimentos
 scripts/gerar-alimentos.mjs  gera data/foods.js
+assets/js/catalogo.js    TACO + alimentos cadastrados: fonte única para todas as telas
+assets/js/diet.js        refeições, subtotais e resumo do dia, sem DOM — testadas
+assets/js/tela-dieta.js  tela da aba Dieta
 assets/icons/            ícones do app (32, 192, 512, apple-touch) e a arte original
 favicon.ico              16, 32 e 48 px
 tests/                   node --test
@@ -97,6 +100,25 @@ transforma os dois JSON do pacote em `data/foods.js`; o cabeçalho do arquivo di
   a TACO não tem macarrão cozido, canela nem tilápia, e suplementos (creatina, hipercalórico)
   não estão em tabela nenhuma — para esses, a pessoa cadastra o alimento com os valores do
   rótulo, e ele fica só no navegador dela.
+
+## Dieta
+
+- Começa com as 8 refeições da especificação, vazias. Dá para criar, renomear, mudar horário,
+  subir/descer e remover refeição; adicionar alimento (pela mesma pesquisa da aba Alimentos),
+  mudar quantidade e unidade, e remover.
+- **Trocar a unidade mantém o peso:** 250 g de arroz viram 2,5 conchas, não 250 conchas.
+- Cada refeição tem subtotal: proteína animal, vegetal e total, carboidrato, gordura e kcal.
+  Proteína de alimento sem tipo (preparações, café) aparece como "sem tipo", não é dividida
+  por palpite.
+- **Resumo do dia:** consumido, meta, diferença, % da meta e por kg, como a tabela do item 7 da
+  especificação, mais os totais por refeição. O painel Hoje mostra a mesma comparação em barras,
+  com o estado **escrito** (abaixo, próximo, atingido, acima), não só na cor. As faixas (85%,
+  97%, 103%) são convenção do app, em `PROGRESSO` (`data/default-data.js`).
+- Nas somas, traço conta como zero; valor que a fonte não publica fica de fora e o total é
+  marcado como **parcial**, com o nome do alimento.
+- "Preencher com um dia de exemplo" monta um dia fictício só com alimentos da TACO. Não é
+  recomendação nem o plano de ninguém. O plano alimentar da especificação traz o nome de uma
+  pessoa real e por isso não entrou no app.
 
 ## Segurança
 
