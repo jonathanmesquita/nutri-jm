@@ -1,33 +1,99 @@
 # Nutri JM
 
-Dieta, macronutrientes, composição corporal e lista de compras — no navegador, sem login.
-Os dados ficam só no aparelho de quem usa (`localStorage`). Endereço: **nutri.jm.dev.br**.
+> **EN:** An offline-first PWA to track diet, macros, body composition, a shopping list and
+> GLP-1/GIP pen doses. Plain JavaScript, no build, no backend, no account: data never leaves the
+> device. Live at **https://nutri.jm.dev.br**.
 
 > As informações apresentadas pelo aplicativo são registros e estimativas. Elas não
 > substituem avaliação de nutricionista, médico ou outro profissional de saúde.
 
-## Estado
+**Endereço:** https://nutri.jm.dev.br · **Versão:** ver `package.json` · **Estado:** V1 da
+especificação completa, em validação para a v1.0.0
 
-**Fases 1 a 7 entregues — a V1 da especificação está completa:** estrutura, navegação, armazenamento, configurações, primeira
-execução, TMB, GCD/TDEE, objetivo, metas de macronutrientes, IMC, banco de alimentos, pesquisa,
-calculadora nutricional, refeições, subtotais e resumo diário (e o consumido × meta no painel
-Hoje), bioimpedância, histórico corporal e avatar. Mais o menu **Medicação** (controle de
-canetas GLP-1 / GIP), fora das fases da especificação original, a lista de compras e o
-**backup** (exportar e importar JSON).
+## Problema
 
-## Rodar
+Acompanhar dieta, macronutrientes, medidas do corpo e compras costuma pedir conta num serviço e
+mandar dado de saúde para um servidor. O controle de canetas GLP-1/GIP, em particular, vive em
+planilhas e anotações soltas, onde um erro de dose é caro.
 
-Não há build nem dependência. Qualquer servidor estático serve:
+## Solução
+
+Um app que abre no navegador do celular, **funciona offline depois do primeiro acesso** e guarda
+tudo no aparelho de quem usa (`localStorage`), sem login e sem envio de dado. Os cálculos são
+funções puras, testadas, e o app **só registra**: nunca sugere dose nem inventa valor nutricional.
+
+## Funcionalidades
+
+- **Hoje:** metas do dia (TMB, gasto energético, proteína, gordura e carboidrato) e o consumido
+  × meta, com o estado escrito, não só em cor.
+- **Alimentos:** pesquisa na TACO (597 alimentos) e calculadora por quantidade e medida caseira.
+- **Dieta:** refeições, subtotais por refeição e resumo do dia.
+- **Corpo:** bioimpedância, histórico, IMC e avatar em pixel art.
+- **Compras:** lista manual e gerada da dieta, com status por item.
+- **Medicação (GLP-1/GIP):** estoque, aplicações, rodízio de local, alertas e diário de sintomas.
+- **Backup:** exportar e importar JSON, conferido por inteiro antes de gravar.
+- **PWA:** instalável, abre offline.
+
+## Stack
+
+JavaScript (módulos ES), HTML e CSS puros, `localStorage`, Service Worker e Web App Manifest.
+**Sem framework, sem build e sem dependência de execução.** Playwright e axe-core existem só como
+dependências de desenvolvimento, para os testes de tela. Hospedagem na Vercel, com cabeçalhos de
+segurança e CSP fechada (ver [Segurança](#segurança)).
+
+## Arquitetura
+
+Telas por hash (`#hoje`, `#dieta`…) montadas por `assets/js/app.js`. Cada área tem um módulo de
+**regra sem DOM** (`calculations.js`, `diet.js`, `body.js`, `meds.js`, `shopping.js`,
+`backup.js`), testado em Node, e um módulo de **tela** (`tela-*.js`) que só desenha. O
+`localStorage` tem uma única porta, `storage.js`, e um teste reprova qualquer chave gravada fora
+do backup. O mapa completo de arquivos está em [Estrutura](#estrutura).
+
+## Rodar localmente
+
+Não há build nem instalação para usar o app. Qualquer servidor estático serve:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Testes dos cálculos (Node 20+):
+Abra `http://localhost:8000`. O service worker só se registra em `https:` ou em `localhost`.
+
+## Testes
 
 ```bash
-npm test
+npm test               # lógica: cálculos, alimentos, dieta, corpo, medicação, compras, backup
+npm ci && npx playwright install chromium   # uma vez, para os testes de tela
+npm run test:tela      # 11 rotas em 320, 390 e 1440 px, axe, offline e lista do cache
 ```
+
+`npm test` precisa só de Node 20+. `test:tela` abre o app no Chromium com os cabeçalhos reais do
+`vercel.json` e confere: nenhum erro de console, de CSP ou de rede; sem rolagem horizontal; um
+`<h1>` por tela; zero violações WCAG A/AA no axe; abertura offline; e que o service worker lista
+todo arquivo do app. Os dois rodam em todo pull request (`.github/workflows/ci.yml`).
+
+## Variáveis de ambiente
+
+Nenhuma. O app não tem servidor nem segredo.
+
+## Deploy
+
+Vercel, em https://nutri.jm.dev.br. `vercel.json` define os cabeçalhos de
+segurança e o `Cache-Control: no-cache` do `service-worker.js`. **Ao mudar qualquer arquivo
+listado no service worker, suba `VERSAO` em `service-worker.js`**, ou quem já abriu o app fica
+na versão antiga. O teste de tela confere que a lista está completa, não que a versão subiu.
+
+## Roadmap
+
+Só o que é próximo e real:
+
+- [ ] **Gráfico do Diário da Medicação** (evolução de dose × peso). Hoje a tela mostra os
+  dados em tabela, com o peso das medições da aba Corpo, sem interpolar. Ficou fora da v1.0.0
+  de propósito: a V1 da especificação está completa sem ele.
+
+Fora do escopo, por escolha: conta, servidor, sincronização entre aparelhos, qualquer sugestão
+de dose e um catálogo de marcas de caneta (só entraria a partir da base de dados aberta da
+Anvisa; ver decisões da Medicação).
 
 ## Estrutura
 
@@ -205,7 +271,7 @@ tirzepatida e semaglutida). Quatro seções, cada uma com endereço próprio:
   "em uso" por vez, que é a descontada. Alertas de última dose, de até quando o estoque dura
   (doses × intervalo), do prazo fora da geladeira (abertura + dias da bula) e da validade.
 - **Diário:** check-in de sintomas e a evolução dose × peso, com o peso das medições da aba Corpo
-  (sem interpolar). O gráfico fica para depois.
+  (sem interpolar). O gráfico está no [Roadmap](#roadmap).
 - **Ajuda:** perguntas frequentes e o link do VigiMed (Anvisa) para relatar evento adverso.
 
 Decisões, todas para não induzir erro de dose:
