@@ -21,3 +21,17 @@ jobs:
           node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8'))"
       - name: Testes dos cálculos
         run: npm test
+
+  tela:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Chromium para o Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Telas, acessibilidade e modo offline
+        run: npm run test:tela
