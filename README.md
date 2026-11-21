@@ -7,7 +7,7 @@
 > As informações apresentadas pelo aplicativo são registros e estimativas. Elas não
 > substituem avaliação de nutricionista, médico ou outro profissional de saúde.
 
-**Endereço:** https://nutri.jm.dev.br · **Versão:** ver `package.json` · **Estado:** V1 da
+**Endereço:** https://nutri.jm.dev.br · **Versão:** 0.9.0 (pré-produção) · **Licença:** [MIT](LICENSE) · **Estado:** V1 da
 especificação completa, em validação para a v1.0.0
 
 ## Problema
