@@ -122,7 +122,7 @@ assets/js/tela-compras.js  tela da aba Compras
 assets/js/backup.js      exportar, conferir e importar o backup JSON, sem DOM — testado
 assets/icons/            ícones do app (32, 192, 512, apple-touch) e a arte original
 favicon.ico              16, 32 e 48 px
-tests/                   node --test
+tests/                   node --test (lógica: *.test.js; tela, axe e offline: tela.test.mjs)
 ```
 
 ### Ícone
